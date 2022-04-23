@@ -1,6 +1,13 @@
 {
   "dependencies": {
+  	"axios": "^0.26.0",
+  	"cheerio": "^1.0.0-rc.10",
+  	"child_process": "^1.0.2",
+  	"encodeurl": "^1.0.2",
     "express": "^4.17.3",
+    "file-type": "^16.5.3",
+    "form-data": "^4.0.0",
+    "node-fetch": "^2.0.0",
     "socket.io": "^4.4.1",
     "syntax-error": "^1.4.0",
     "telegraf": "^4.7.0"
