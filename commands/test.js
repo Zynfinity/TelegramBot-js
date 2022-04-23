@@ -1,6 +1,6 @@
 const util = require('util')
 module.exports = {
-    name: ['ev'],
+    name: ['alive'],
     async handler(bot, ctx) {
         ctx.reply(`Halo, im alive')
     }
