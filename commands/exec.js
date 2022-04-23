@@ -4,7 +4,7 @@ module.exports = {
     async handler(bot, ctx) {
         try {
             console.log("E X E C")
-            exec(ctx.message.text.slice(3), (err, res){
+            exec(ctx.message.text.slice(3), (err, res) => {
                 if(err) return ctx.reply(String(err))
                 ctx.reply(res)
             })
