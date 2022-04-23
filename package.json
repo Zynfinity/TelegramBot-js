@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "express": "^4.17.3",
+    "socket.io": "^4.4.1",
+    "syntax-error": "^1.4.0",
+    "telegraf": "^4.7.0"
+  }
+}
