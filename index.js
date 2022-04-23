@@ -3,9 +3,11 @@ const fs = require('fs')
 const path = require('path')
 const syntaxerror = require('syntax-error')
 const util = require('util')
-const bot = new Telegraf('5340742042:AAFtc8_iaBF6JY-xAPyf37x4aRcuWtQFbW8')
-bot.start((ctx) => ctx.reply('Welcome'))
-bot.help((ctx) => ctx.reply('Send me a sticker'))
+const config = JSON.parse(fs.readFileSync('./lib/config.json'))
+const bot = new Telegraf(config.token)
+
+bot.start((ctx) => ctx.reply('Hi, Saya adalah TakaBot\nBot yang dibuat untuk mempermudah segala hal'))
+bot.help((ctx) => ctx.reply('On progress'))
 bot.use(async (ctx, next) => {
   console.time(`Processing update ${ctx.update.update_id}`)
   await next() // runs next middleware
