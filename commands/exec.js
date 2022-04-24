@@ -3,6 +3,7 @@ module.exports = {
     name: ['ex'],
     cmd: ['ex', 'exec'],
     category: 'owner',
+    owner: true,
     async handler(msg, {text, conn}) {
         try {
             console.log("E X E C")
