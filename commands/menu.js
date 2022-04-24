@@ -1,5 +1,5 @@
 const request = require('request')
-const { kapitalisasiKata } = require('../../zxbot/lib/tools')
+const { kapitalisasiKata } = require('../lib/tools')
 module.exports = {
     name: ['menu'],
     cmd: ['menu'],

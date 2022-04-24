@@ -8,10 +8,10 @@ module.exports = {
             console.log("E X E C")
             exec(text, (err, res) => {
                 if(err) return msg.reply(String(err))
-                conn.sendMessage(msg.id, res)
+                conn.reply(msg, res)
             })
         } catch (e) {
-            conn.sendMessage(msg.id, String(err))
+            conn.reply(msg, String(err))
         }
     }
 }
