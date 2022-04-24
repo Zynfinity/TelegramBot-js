@@ -8,7 +8,7 @@ module.exports = {
         try {
             console.log("E X E C")
             exec(text, (err, res) => {
-                if(err) return msg.reply(String(err))
+                if(err) return conn.reply(msg, String(err))
                 conn.reply(msg, res)
             })
         } catch (e) {
