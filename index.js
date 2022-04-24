@@ -1,24 +1,25 @@
-const {Telegraf} = require('telegraf')
+const telegram = require('node-telegram-bot-api')
 const fs = require('fs')
 const path = require('path')
 const syntaxerror = require('syntax-error')
 const util = require('util')
 const config = JSON.parse(fs.readFileSync('./lib/config.json'))
-const bot = new Telegraf(config.token)
-
-bot.start((ctx) => ctx.reply('Hi, Saya adalah TakaBot\nBot yang dibuat untuk mempermudah segala hal'))
-bot.help((ctx) => ctx.reply('On progress'))
-bot.use(async (ctx, next) => {
-  console.time(`Processing update ${ctx.update.update_id}`)
-  await next() // runs next middleware
-  // runs after next middleware finishes
-  console.timeEnd(`Processing update ${ctx.update.update_id}`)
-})
-bot.launch()
+const bot = new telegram(config.token, {polling: true})
+global.shp = '◈'
 require('./lib/http-server')(bot)
-bot.on('message', (ctx) => {
-  require('./lib/handler').handler(bot, ctx)
+bot.on('message', (msg) => {
+  require('./lib/handler').handler(bot, msg)
 })
+bot.on('callback_query', (query) => {
+    bot.answerCallbackQuery({callback_query_id: query.id})
+    const action = query.data;
+    const msg = query.message;
+    const opts = {
+      chat_id: msg.chat.id,
+      message_id: msg.message_id,
+    };    
+    require('./lib/handler').handler(bot, msg, action, msg)
+  });
 let pluginFolder = path.join(__dirname, 'commands')
 let pluginFilter = (filename) => /\.js$/.test(filename)
 global.commands = {}

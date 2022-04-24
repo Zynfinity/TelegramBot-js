@@ -1,15 +1,17 @@
 const {exec} = require('child_process')
 module.exports = {
     name: ['ex'],
-    async handler(bot, ctx) {
+    cmd: ['ex', 'exec'],
+    category: 'owner',
+    async handler(msg, {text, conn}) {
         try {
             console.log("E X E C")
-            exec(ctx.message.text.slice(3), (err, res) => {
-                if(err) return ctx.reply(String(err))
-                ctx.reply(res)
+            exec(text, (err, res) => {
+                if(err) return msg.reply(String(err))
+                conn.sendMessage(msg.id, res)
             })
         } catch (e) {
-            ctx.reply(String(e))
+            conn.sendMessage(msg.id, String(err))
         }
     }
 }

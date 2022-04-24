@@ -1,14 +1,17 @@
 const util = require('util')
 module.exports = {
     name: ['ev'],
-    async handler(bot, ctx) {
+    cmd: ['ev', 'eval'],
+    category: 'owner',
+    owner: true,
+    async handler(msg, {conn, text}) {
         try {
             console.log("E V A L")
-            let evaled = await eval(ctx.message.text.slice(3))
+            let evaled = await eval(text)
             if (typeof evaled !== 'string') evaled = require('util').inspect(evaled)
-            await ctx.reply(evaled)
+            await conn.reply(msg, evaled)
         } catch (e) {
-            ctx.reply(String(e))
+            await conn.reply(msg, String(e))
         }
     }
 }
