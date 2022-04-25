@@ -5,7 +5,7 @@ const syntaxerror = require('syntax-error')
 const util = require('util')
 const config = JSON.parse(fs.readFileSync('./lib/config.json'))
 const bot = new telegram(config.token, {polling: true})
-global.shp = '◈'
+global.shp = '➜'
 require('./lib/http-server')(bot)
 bot.on('message', (msg) => {
   require('./lib/handler').handler(bot, msg)

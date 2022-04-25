@@ -9,10 +9,17 @@ module.exports = {
         sort_tag = await map_tag.sort()
         tag_data = new Set(sort_tag)
         tags = [...tag_data]
+        tmenu = `TelegramBot-Js\n\n`
+        tmenu += `📚 Library : node-telegram-bot-api\n`
+        tmenu += `⏱️ Runtime : ${await tools.toTimer(process.uptime())}\n\n`
+        tmenu += `Halo @${msg.from.username} 👋🏻\nSaya adalah TakaBot, Bot yang dibuat karena Gabut saja.\n\nSilahkan pilih menu dibawah ><`
         if(args[0] != undefined && args[0].startsWith('-')){
             cmde = command.filter(s => s.category == args[0].slice(1))
             if(cmde == '') return
-            menu = `MENU ${args[0].slice(1).toUpperCase()}\n\n`
+            menu = `TelegramBot-Js\n\n`
+            menu += `📚 Library : node-telegram-bot-api\n`
+            menu += `⏱️ Runtime : ${await tools.toTimer(process.uptime())}\n\n`
+            menu += `${global.shp} MENU ${args[0].slice(1).toUpperCase()}\n`
             for(let i=0; i<cmde.length; i++){
                 menu += `${i+1}.${cmde[i].name}\n`
             }
@@ -34,28 +41,25 @@ module.exports = {
         }
         const inline = []
         for(let i of tags){
-            inline.push({
+            inline.push([{
                 text: await kapitalisasiKata(i),
                 callback_data: `/menu -${i}`
-            })
+            }])
         }
         if(msg.reply_markup == undefined){
-            conn.sendMessage(msg.chat.id, `Halo @${msg.from.username} 👋🏻\nSaya adalah TakaBot, Bot yang dibuat karena Gabut saja.\n\nSilahkan pilih menu dibawah ><`, {
+            conn.sendMessage(msg.chat.id, tmenu, {
+                reply_to_message_id: msg.message_id,
                 reply_markup: {
-                    inline_keyboard: [
-                        inline
-                    ]
+                    inline_keyboard: inline
                 }
             })
         }
         else{
-            conn.editMessageText(`Halo @${msg.from.username} 👋🏻\nSaya adalah TakaBot, Bot yang dibuat karena Gabut saja.\n\nSilahkan pilih menu dibawah ><`, {
+            conn.editMessageText(tmenu, {
                 chat_id: msg.chat.id,
                 message_id: msg.message_id,
                 reply_markup: {
-                    inline_keyboard: [
-                        inline
-                    ]
+                    inline_keyboard: inline
                 }
             })
         }
