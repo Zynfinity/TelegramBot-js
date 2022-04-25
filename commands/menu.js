@@ -1,4 +1,5 @@
-const request = require('request')
+const fs = require('fs')
+const config = JSON.parse(fs.readFileSync('./lib/config.json'))
 const { kapitalisasiKata } = require('../lib/tools')
 module.exports = {
     name: ['menu'],
@@ -23,7 +24,7 @@ module.exports = {
             for(let i=0; i<cmde.length; i++){
                 menu += `${i+1}.${cmde[i].name}\n`
             }
-            return conn.editMessageText(menu, {
+            return conn.editMessageCaption(menu, {
                 reply_to_message_id: msg.message_id,
                 chat_id: msg.chat.id,
                 message_id: msg.message_id,
@@ -31,7 +32,7 @@ module.exports = {
                     inline_keyboard: [
                         [
                             {
-                                text: 'Back',
+                                text: '<< Back',
                                 callback_data: `/menu`
                             }
                         ]
@@ -47,7 +48,8 @@ module.exports = {
             }])
         }
         if(msg.reply_markup == undefined){
-            conn.sendMessage(msg.chat.id, tmenu, {
+            conn.sendPhoto(msg.chat.id, config.image, {
+                caption: tmenu,
                 reply_to_message_id: msg.message_id,
                 reply_markup: {
                     inline_keyboard: inline
@@ -55,7 +57,7 @@ module.exports = {
             })
         }
         else{
-            conn.editMessageText(tmenu, {
+            conn.editMessageCaption(tmenu, {
                 chat_id: msg.chat.id,
                 message_id: msg.message_id,
                 reply_markup: {
