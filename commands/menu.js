@@ -17,12 +17,21 @@ module.exports = {
         if(args[0] != undefined && args[0].startsWith('-')){
             cmde = command.filter(s => s.category == args[0].slice(1))
             if(cmde == '') return
+            helps = []
+            for(let o of cmde.map(f => f.name)){
+                for(let p of o){
+                    helps.push(p)
+                }
+            }
+            sort = await helps.sort(function (a, b) {
+                return a.length - b.length
+            })
             menu = `TelegramBot-Js\n\n`
             menu += `📚 Library : node-telegram-bot-api\n`
             menu += `⏱️ Runtime : ${await tools.toTimer(process.uptime())}\n\n`
             menu += `${global.shp} MENU ${args[0].slice(1).toUpperCase()}\n`
-            for(let i=0; i<cmde.length; i++){
-                menu += `${i+1}.${cmde[i].name}\n`
+            for(let i=0; i<sort.length; i++){
+                menu += `${i+1}.${sort[i]}\n`
             }
             return conn.editMessageCaption(menu, {
                 reply_to_message_id: msg.message_id,

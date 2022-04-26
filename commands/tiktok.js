@@ -11,7 +11,8 @@ module.exports = {
             const tiktok = await scrapp.tikdown(text)
             if(!tiktok.status) return conn.reply(msg, tiktok)
             audio = await tools.getBuffer(tiktok.video)
-            conn.sendVideo(from, audio, {
+            await conn.sendVideo(from, audio, {
+                reply_to_message_id: msg.message_id,
                 reply_markup: {
                     inline_keyboard: [
                         [
