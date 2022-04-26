@@ -26,8 +26,8 @@ global.commands = {}
 for (let filename of fs.readdirSync(pluginFolder).filter(pluginFilter)) {
     try {
         plugins = require(path.join(pluginFolder, filename))
-        if(plugins.function) global.functions[filename] = plugins
-        else global.commands[filename] = plugins
+        //f(plugins.function) global.functions[filename] = plugins
+        global.commands[filename] = plugins
     } catch (e) {
         console.log(e)
     }
