@@ -1,9 +1,11 @@
-const request = require('request')
+const fs = require('fs')
 module.exports = {
     name: ['start'],
     cmd: ['start'],
     async handler(msg, {conn}) {
-        conn.sendMessage(msg.id, `Halo, Saya adalah TakaBot\nBot yang dibuat karena Gabut saja`, {
+        conn.sendPhoto(msg.id, config.image, {
+            caption: `Halo, Saya adalah TakaBot\nBot yang dibuat karena Gabut saja`,
+            reply_to_message_id: msg.message_id,
             reply_markup: {
                 inline_keyboard: [
                     [

@@ -8,7 +8,20 @@ module.exports = {
             if(!text) return conn.reply(msg, 'Mau cari apa?')
             const peak = await scrapp.peakpx(text)
             rand = peak[Math.floor(Math.random() * peak.length)]
-            await conn.sendPhoto(msg.id, rand.image, {reply_to_message_id: msg.message_id, caption: await tools.parseResult('Wallpaper', rand)})
+            await conn.sendPhoto(msg.id, rand.image, {
+                reply_to_message_id: msg.message_id,
+                caption: await tools.parseResult('Wallpaper', rand),
+                reply_markup: {
+                    inline_keyboard: [
+                        [
+                            {
+                                text: 'Get Again',
+                                callback_data: `/wp ${text}`
+                            }
+                        ]
+                    ]
+                }
+            })
         }catch(e){
             errormes(e, msg)
         }
