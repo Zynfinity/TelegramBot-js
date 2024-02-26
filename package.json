@@ -1,0 +1,31 @@
+{
+  "name": "kazu-bot",
+  "version": "1.0.0",
+  "description": "Telegram Bot using javascript Nodejs",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "bot",
+    "telegram"
+  ],
+  "author": "Zynfinity",
+  "license": "MIT",
+  "dependencies": {
+    "@nechlophomeriaa/spotifydl": "^1.0.11",
+    "chokidar": "^3.6.0",
+    "convex": "^1.9.0",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.2",
+    "express": "^4.18.2",
+    "moment-timezone": "^0.5.45",
+    "mongodb": "^6.3.0",
+    "morgan": "^1.10.0",
+    "node-telegram-bot-api": "^0.64.0",
+    "spotify-finder": "^2.1.1",
+    "spotifydl-core": "^0.2.0",
+    "yt-search": "^2.10.4"
+  }
+}
