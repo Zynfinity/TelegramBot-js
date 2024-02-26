@@ -1,60 +1,78 @@
-const telegram = require('node-telegram-bot-api')
-const fs = require('fs')
-const path = require('path')
-const syntaxerror = require('syntax-error')
-const util = require('util')
-const config = JSON.parse(fs.readFileSync('./lib/config.json'))
-const bot = new telegram(config.token, {polling: true})
-global.shp = '➜'
-require('./lib/http-server')(bot)
-bot.on('message', (msg) => {
-  require('./lib/handler').handler(bot, msg)
-})
-bot.on('callback_query', (query) => {
-    bot.answerCallbackQuery({callback_query_id: query.id})
+import TelegramBot from "node-telegram-bot-api";
+import cors from "cors";
+import { Token } from "./config.js";
+import Express from "express";
+import chokidar from "chokidar"
+import BotRouter from "./router/BotRouter.js";
+import { api, connect } from "./config/db.js";
+import morgan from "morgan";
+import handler from "./src/lib/handler.js"
+global.conn = {};
+global.commands = {};
+global.shp = ">"
+const app = Express();
+app.use(cors({ origin: ["http://localhost:3000", "http://192.168.64.149:3000"] }));
+app.use(Express.json());
+app.use(Express.urlencoded());
+app.use(morgan('dev'));
+app.use(BotRouter)
+async function Start() {
+  global.db = await connect()
+  app.listen(8000, async () => {
+    console.log("Server listening on port 8000");
+  });
+  const bot = new TelegramBot(Token, { polling: true });
+  bot.on("message", async (msg) => {
+    handler(bot, msg)
+  });
+  bot.on('callback_query', function onCallbackQuery(query) {
+    bot.answerCallbackQuery(query.id)
+    // bot.answerCallbackQuery(query.id, {text: 'test', show_alert: true});
     const action = query.data;
     const msg = query.message;
     const opts = {
       chat_id: msg.chat.id,
       message_id: msg.message_id,
-    };    
-    require('./lib/handler').handler(bot, msg, action, msg)
+    };
+    handler(bot, msg, action, msg)
   });
-let pluginFolder = path.join(__dirname, 'commands')
-let pluginFilter = (filename) => /\.js$/.test(filename)
-global.commands = {}
-for (let filename of fs.readdirSync(pluginFolder).filter(pluginFilter)) {
-    try {
-        plugins = require(path.join(pluginFolder, filename))
-        //f(plugins.function) global.functions[filename] = plugins
-        global.commands[filename] = plugins
-    } catch (e) {
-        console.log(e)
-    }
+  // bot.on('inline_query', query => {
+  //   const inlineQueryId = query.id
+  //   bot.answerInlineQuery(inlineQueryId, [
+  //     {
+  //       type: 'article',
+  //       id: '1',
+  //       title: 'asui',
+  //       input_message_content: {
+  //         message_text: 'asu'
+  //       }
+  //     }
+  //   ])
+  // })
+  bot.on("polling_error", (error) => {
+    console.log(error.response); // => 'EFATAL'
+  });
 }
-global.reload = (_event, filename) => {
-    if (pluginFilter(filename)) {
-        let dir = path.join(pluginFolder, filename)
-        isi = require(path.join(pluginFolder, filename))
-        if (dir in require.cache) {
-            delete require.cache[dir]
-            if (fs.existsSync(dir)) console.info(`re - require plugin '${filename}'`)
-            else {
-                console.log(`deleted plugin '${filename}'`)
-                delete global.commands[filename]
-            }
-        } else console.info(`requiring new plugin '${filename}'`)
-        let err = syntaxerror(fs.readFileSync(dir), filename)
-        if (err) console.log(`syntax error while loading '${filename}'\n${err}`)
-        else
-            try {
-                global.commands[filename] = require(dir)
-            } catch (e) {
-                console.log(e)
-            } finally {
-                global.commands = Object.fromEntries(Object.entries(global.commands).sort(([a], [b]) => a.localeCompare(b)))
-            }
-    }
-}
-Object.freeze(global.reload)
-fs.watch(path.join(__dirname, 'commands'), global.reload)
+var watcher = chokidar.watch('./src/commands', { ignored: /^\./, persistent: true });
+watcher
+  .on('error', function (error) { console.error('Error happened', error); })
+  .on('add', async function (pathh) {
+    const path = pathh.split(pathh.includes('/') ? '/' : "\\")
+    const file = path[path.length - 1]
+    console.log({ file, pathh })
+    global.commands[file] = (await import('./' + pathh)).default
+  })
+  .on('change', async function (pathh) {
+    const reload = (await import(`./${pathh}?update=${Date.now()}`)).default
+    const path = pathh.split(pathh.includes('/') ? '/' : "\\")
+    const file = path[path.length - 1]
+    console.log(`${file} Updated`)
+    global.commands[file] = reload
+  })
+  .on('unlink', function (pathh) {
+    const path = pathh.split(pathh.includes('/') ? '/' : "\\")
+    const file = path[path.length - 1]
+    console.log(`deleted plugin ${file}`)
+    delete global.commands[file]
+  })
+Start()
